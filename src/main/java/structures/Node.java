@@ -11,17 +11,6 @@ public class Node<E> {
         this.next = null;
     }
 
-    public Node(Crop crop) {
-        this.data = (E) crop;
-        this.next = null;
-    }
-
-    public Node(Chest chest)
-    {
-        this.data = (E) chest;
-        this.next = null;
-    }
-
     public E getData()
     {
         return data;
