@@ -5,7 +5,7 @@ import model.Controller;
 
 public class Main {
     private Controller mainController;
-    public static Scanner input = new Scanner(System.in);
+    public static Scanner sc = new Scanner(System.in);
     public Main() {
 
     }
@@ -33,8 +33,8 @@ public class Main {
         System.out.println(" 4. To calculate the efficency of a colaborator ");
         System.out.println(" 5. To delete a colaborator ");
         System.out.println(" 23. to exit ");
-        optionMenu = input.nextInt();
-        input.nextLine();
+        optionMenu = sc.nextInt();
+        sc.nextLine();
         return optionMenu;
     }
 }
