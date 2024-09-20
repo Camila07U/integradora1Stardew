@@ -19,6 +19,7 @@ public class CropType {
 
             // Other crops
             case "Fiber", "Ancient Fruit", "Qi Fruit" -> Season.OTHERS;
+
             default -> Season.OTHERS;
         };
 
