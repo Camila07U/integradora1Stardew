@@ -6,10 +6,21 @@ public class Stack {
     private int quantity;
     private static final int MAX_STACKS_FOR_SLOT = 25;
 
+    
+
+    public Stack() {
+        this.item = null;
+        this.quantity = 0;
+    }
+
     public Stack(Crop item, int quantity) {
+        if(quantity <= MAX_STACKS_FOR_SLOT){
         this.item = item;
         this.quantity = quantity;
+    } else {
+        System.out.println("Max 25 Stack for Slot");
     }
+}
 
     public Crop getItem() {
         return item;
