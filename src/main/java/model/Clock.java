@@ -5,13 +5,15 @@ public class Clock {
     private int days =0;
     private Season season= Season.SPRING;
 
-    public void advanceDays(int days) {
+    public boolean advanceDays(int days) {
         for (int i = 0; i < days; i++) {
             days++;
-            if (days % 60 == 0) {
+            if (days % 28 == 0) {
                 changeSeason();
+                return true;
             }
         }
+        return false;
     }
 
     public void changeSeason() {

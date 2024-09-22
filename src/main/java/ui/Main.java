@@ -2,13 +2,12 @@ package ui;
 
 import java.util.Scanner;
 import model.Controller;
-import model.Crop; // Elminar este import despues, es solo para pruebas
+import model.PlantedCrop;
 
 public class Main {
     private Controller controller;
     public static Scanner sc = new Scanner(System.in);
     public Main() {
-        controller = new Controller();
     }
 
     public static void main(String[] args) {
@@ -18,9 +17,9 @@ public class Main {
         //    ESPACIO DE PRUEBAS, AQUI VENGO A PROBAR COSITAS
 
         /*Crop crop1 = new Crop("Garlic");
+        PlantedCrop plantedCrop1 = new PlantedCrop("Garlic",12);
 
-        System.out.println(crop1.getName());
-        System.out.println(crop1.getStation());
+        System.out.println(plantedCrop1.getName());
 
          */
 

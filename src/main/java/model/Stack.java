@@ -1,33 +1,39 @@
 package model;
 
-public class Stack {
+import structures.Getters;
 
-    private Crop crop;
+public class Stack implements Getters {
+
+    private PlantedCrop plantedCrop;
     private int quantity;
     private static final int MAX_STACKS_FOR_SLOT = 25;
-
     
 
     public Stack() {
-        this.crop = null;
+        this.plantedCrop = null;
         this.quantity = 0;
     }
 
-    public Stack(Crop item, int quantity) {
+    public Stack(PlantedCrop item, int quantity) {
         if (quantity <= MAX_STACKS_FOR_SLOT) {
-            this.crop = item;
+            this.plantedCrop = item;
             this.quantity = quantity;
         } else {
             System.out.println("Max 25 Stack for Slot"); // Crear excepcion
         }
     }
-
-    public Crop getCrop() {
-        return crop;
+    
+    @Override
+    public String getName() {
+        return "";
     }
 
-    public void setCrop(Crop crop) {
-        this.crop = crop;
+    public PlantedCrop getCrop() {
+        return plantedCrop;
+    }
+
+    public void setCrop(PlantedCrop plantedCrop) {
+        this.plantedCrop = plantedCrop;
     }
 
     public int getQuantity() {
@@ -42,13 +48,13 @@ public class Stack {
 
     // Verifica si el stack esta vacio
     public boolean isEmpty() {
-        return crop == null;
+        return plantedCrop == null;
     }
 
     // Asignar un cultivo a un Stack
-    public void setCrop(Crop crop, int quantity) {
+    public void setCrop(PlantedCrop plantedCrop, int quantity) {
         if (quantity <= MAX_STACKS_FOR_SLOT) {
-            this.crop = crop;
+            this.plantedCrop = plantedCrop;
             this.quantity = quantity;
         } else {
             System.out.println("Max 25 Stack for Slot"); // Crear excepcion a esto
@@ -66,7 +72,7 @@ public class Stack {
 
     // Vaciar un stack
     public void clearStack(){
-        this.crop = null;
+        this.plantedCrop = null;
         this.quantity = 0;
     }
 
@@ -75,7 +81,8 @@ public class Stack {
         if (isEmpty()) {
             return "Stack is empty";
         } else {
-            return "Crop: " + crop.getName() + "\nType: " + crop.getStation() + "\n Quantity: " + quantity + "\n + ";
+            return "Crop: " + plantedCrop.getName() + "\n Quantity: " + quantity + "\n + ";
         }
     }
+
 }
