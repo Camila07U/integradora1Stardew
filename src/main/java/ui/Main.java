@@ -2,7 +2,7 @@ package ui;
 
 import java.util.Scanner;
 import model.Controller;
-import model.Crop;
+import model.PlantedCrop;
 
 public class Main {
     private Controller mainController;
@@ -15,10 +15,9 @@ public class Main {
 
         //    ESPACIO DE PRUEBAS, AQUI VENGO A PROBAR COSITAS
 
-        Crop crop1 = new Crop("Garlic");
+        PlantedCrop plantedCrop1 = new PlantedCrop("Garlic",12);
 
-        System.out.println(crop1.getName());
-        System.out.println(crop1.getStation());
+        System.out.println(plantedCrop1.getName());
 
         System.out.println("---Welcome to Stardew Valley---");
         boolean exit = false;

@@ -41,7 +41,7 @@ public class Chest {
 
     // Metodos aparte
 
-    public boolean addCrop(Crop crop, int quantity) {
+    public boolean addCrop(PlantedCrop plantedCrop, int quantity) {
         boolean added = false;
         boolean full = isFull();
         if (full = false) {
@@ -50,12 +50,12 @@ public class Chest {
 
                 // Si el primero esta vacio lo guarda alli
                 if (stack.isEmpty()) {
-                    stack.setCrop(crop, quantity);
+                    stack.setCrop(plantedCrop, quantity);
                     added = true;
                     return added;
 
                     // Valida que el cultivo ya guardado en ese Stack sea el mismo que vamos a guardar
-                } else if (stack.getCrop().getName().equals(crop.getName())) {
+                } else if (stack.getCrop().getName().equals(plantedCrop.getName())) {
                     stack.incrementQuantity(quantity);
                     added = true;
                     return added;

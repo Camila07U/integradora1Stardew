@@ -5,16 +5,11 @@ import java.util.ArrayList;
 public class Controller {
 
     private final Clock clock;
-    private ArrayList<Crop> crops;
+    private ArrayList<PlantedCrop> plantedCrops;
 
     public Controller() {
-        this.crops = new ArrayList<>();
+        this.plantedCrops = new ArrayList<>();
         this.clock = new Clock();
-    }
-
-    public void addCrop(String name){
-
-        
     }
 
     public void changeDays(int amount){
@@ -34,13 +29,15 @@ public class Controller {
             case 5: days = 60;
         }
 
-        clock.advanceDays(days);
+        if(clock.advanceDays(days)){
+            changeToRotten();
+        }
 
-        for(int i=0; i<crops.size(); i++){
+        for(int i = 0; i< plantedCrops.size(); i++){
 
             for(int j=0; j<days; j++){
 
-                crops.get(i).grow();
+                plantedCrops.get(i).grow();
 
             }
 
@@ -48,12 +45,70 @@ public class Controller {
 
     }
 
-    public String cropList(){
+    private void changeToRotten() {
+        for(int i = 0; i<plantedCrops.size(); i++){
+            if(cropSeason(plantedCrops.get(i).getName())!=Season.OTHERS){
+                plantedCrops.get(i).setStatus(CropStatus.ROTTEN);
+            }
+        }
+    }
 
+    public Season cropSeason(String name){
+
+        return switch (name) {
+            // Spring crops
+            case "Garlic", "Blue Allium", "Unmilled Rice", "Parsnip" -> Season.SPRING;
+
+            // Summer crops
+            case "Poppy", "Blueberry", "Starfruit", "Hot Pepper" -> Season.SUMMER;
+
+            // Autumn crops
+            case "Artichoke", "Amaranth", "Sweet Gem Berry", "Eggplant" -> Season.AUTUMN;
+
+            // Winter crops
+            case "Winter Melon" -> Season.WINTER;
+
+            // Other crops
+            case "Fiber", "Ancient Fruit", "Qi Fruit" -> Season.OTHERS;
+
+            default -> Season.OTHERS;
+        };
 
     }
 
+    //revisa si puede ser plantada en la estación actual
+    public boolean checkIfCanBePlanted(String name){
 
+        Season actual = clock.getSeason();
+        Season cropSeason = cropSeason(name);
+
+        if(cropSeason == actual || cropSeason == Season.OTHERS){
+
+            return true;
+        }else{
+            return false;
+        }
+
+    }
+
+    //planta un nuevo crop
+    public void newPlantedCrop(String name, int amount){
+        if(checkIfCanBePlanted(name)){
+            plantedCrops.add(new PlantedCrop(name, amount));
+        }
+    }
+
+    //lista de los cultivos plantados y su estatus
+    public String listCropsStatus(){
+
+        StringBuilder list = new StringBuilder();
+
+        for(int i = 0; i < plantedCrops.size(); i++){
+            list.append(plantedCrops.get(i).toString()).append("\n");
+        }
+
+        return list.toString();
+    }
 
 
 }
