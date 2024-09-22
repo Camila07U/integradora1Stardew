@@ -22,7 +22,7 @@ public class Stack implements Getters {
             System.out.println("Max 25 Stack for Slot"); // Crear excepcion
         }
     }
-    
+
     @Override
     public String getName() {
         return "";
