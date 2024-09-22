@@ -1,10 +1,8 @@
 package structures;
 
-import model.*;
-import java.util.Comparator;
 import java.util.Iterator;
 
-public class SinglyLinkedList<T> implements Iterable<T> {
+public class SinglyLinkedList<T extends Getters> implements Iterable<T> {
 
     private Node<T> root;
     private int size;
@@ -38,6 +36,29 @@ public class SinglyLinkedList<T> implements Iterable<T> {
             current.setNext(newNode);
         }
         size++;
+    }
+
+    public Node<T> search(String name) {
+        Node<T> found = null;
+
+        // Caso base
+        if(root.getData().getName().equals(name)){
+            found = root;
+
+        } else {  // Caso iterativo
+            Node<T> current = root;
+
+            while(current.getNext() != null && !current.getNext().getData().getName().equals(name)){
+                current = current.getNext();
+            }
+            if(current.getNext() != null){
+                found = current.getNext();
+            } else {
+                found = null;
+            }
+        }
+
+        return found;
     }
 
     // Metodo para verificar si esta vacia
@@ -78,6 +99,7 @@ public class SinglyLinkedList<T> implements Iterable<T> {
         return found;
     }
 
+    // Mostrar los elementos de la linked list
     public void printLinkedList(){
         Node<T> current = root;
         while (current != null){
@@ -112,7 +134,7 @@ public class SinglyLinkedList<T> implements Iterable<T> {
         }
     }
 
-
+    // Dejar la lista vacia
     public void clean(){
         root = null;
         size = 0;

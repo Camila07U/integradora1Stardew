@@ -2,25 +2,28 @@ package ui;
 
 import java.util.Scanner;
 import model.Controller;
-import model.Crop;
+import model.Crop; // Elminar este import despues, es solo para pruebas
 
 public class Main {
-    private Controller mainController;
+    private Controller controller;
     public static Scanner sc = new Scanner(System.in);
     public Main() {
+        controller = new Controller();
     }
 
     public static void main(String[] args) {
-        Main main = new Main();
+        Main objMain = new Main();
+        System.out.println("---Welcome to Stardew Valley---");
 
         //    ESPACIO DE PRUEBAS, AQUI VENGO A PROBAR COSITAS
 
-        Crop crop1 = new Crop("Garlic");
+        /*Crop crop1 = new Crop("Garlic");
 
         System.out.println(crop1.getName());
         System.out.println(crop1.getStation());
 
-        System.out.println("---Welcome to Stardew Valley---");
+         */
+
         boolean exit = false;
         int menu;
 
@@ -45,4 +48,20 @@ public class Main {
         sc.nextLine();
         return optionMenu;
     }
+
+    public void createChest() {
+        System.out.println("==========CREATE THE CHEST==========" + "\n");
+        System.out.println("Enter the name chest: ");
+        String name = sc.nextLine();
+        String result = controller.createChest(name);
+        System.out.println(result);
+    }
+
+    public void searchChest(){
+        System.out.println("==========SEARCH THE CHEST==========" + "\n");
+        System.out.println("Enter the name chest that want to search: ");
+        String name = sc.nextLine();
+    }
+
+
 }

@@ -2,14 +2,14 @@ package model;
 
 import structures.*;
 
-public class Chest {
+public class Chest implements Getters{
 
     private String name;
     private LabelChest type;
     private SinglyLinkedList<Stack> stacks;
     private static final int MAX_SLOTS = 50;
 
-    public Chest(String name, LabelChest type) {
+    public Chest(String name) {
         this.name = name;
         this.type = LabelChest.DEFAULT;
         stacks = new SinglyLinkedList<>();
