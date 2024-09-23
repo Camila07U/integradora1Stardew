@@ -5,6 +5,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
+
+import Exceptions.*;
 import structures.*;
 
 // Import para persistencia
@@ -40,14 +42,49 @@ public class Controller {
     }
 
 
-    public Chest searchChest(String name){
+    /**
+     * Searches for a chest by its name in the collection of chests.
+     *
+     * @param name The name of the chest to search for.
+     * @return The found chest if it exists, otherwise null.
+     */
+    public Chest searchChest(String name) {
+        Node<Chest> found = chests.search(name);
+
+        if (found != null) {
+            return found.getData(); // Devuelve el cofre si es encontrado
+        } else {
+            throw new ChestNotFoundException("Chest with name " + name + " not found.");
+        }
+    }
+
+    public String findChestContents(String name) {
+        try {
+            Chest chest = searchChest(name); // Busca el cofre
+            return chest.showChestContents().toString(); // Devuelve el contenido
+        } catch (ChestNotFoundException e) {
+            return e.getMessage(); // Muestra el mensaje de la excepción
+        }
+    }
+
+    /**
+     * Removes a chest with the specified name from the collection of chests.
+     * @param name The name of the chest to be removed.
+     * @return A message indicating whether the chest was successfully removed or not.
+     */
+    public String removeChest(String name){
+        String message = "";
         Node<Chest> found = chests.search(name);
 
         if(found != null){
-            return found.getData();
-        } else {
-            return null; // Crear una excepcion para cuando no se encuentre el cofre
+            boolean removeChest = chests.remove(found.getData());
+            if(removeChest){
+                message = "Chest with the name" + name + " removed";
+            } else {
+                message = "Chest with the name" + name + " not found";
+            }
         }
+        return message;
     }
 
     public void changeDays(int amount) {
@@ -131,6 +168,7 @@ public class Controller {
 
     //planta un nuevo crop
     public void newPlantedCrop(String name, int amount){
+
         if(checkIfCanBePlanted(name)){
             plantedCrops.add(new PlantedCrop(name, amount));
         }
@@ -147,6 +185,5 @@ public class Controller {
 
         return list.toString();
     }
-
 
 }

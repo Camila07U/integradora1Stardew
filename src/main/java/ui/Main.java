@@ -60,7 +60,19 @@ public class Main {
         System.out.println("==========SEARCH THE CHEST==========" + "\n");
         System.out.println("Enter the name chest that want to search: ");
         String name = sc.nextLine();
+        String result = String.valueOf(controller.findChestContents(name));
+        System.out.println(result);
     }
+
+    public void removeChest(){
+        System.out.println("==========REMOVE THE CHEST==========" + "\n");
+        System.out.println("Enter the name chest that want to remove: ");
+        String name = sc.nextLine();
+        String result = controller.removeChest(name);
+        System.out.println(result);
+    }
+
+
 
 
 }

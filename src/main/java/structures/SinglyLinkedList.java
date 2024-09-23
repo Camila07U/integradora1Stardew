@@ -87,7 +87,6 @@ public class SinglyLinkedList<T extends Getters> implements Iterable<T> {
         while(current.getNext() != null && !current.getNext().getData().equals(data)){
             current = current.getNext();
         }
-
         // Si se encuentra el nodo a eliminar, se elimina
         if (current.getNext() != null) {
             current.setNext(current.getNext().getNext());
@@ -95,7 +94,6 @@ public class SinglyLinkedList<T extends Getters> implements Iterable<T> {
             found = true;
             return found;
         }
-
         return found;
     }
 

@@ -2,7 +2,7 @@ package model;
 
 import structures.*;
 
-public class Chest implements Getters{
+public class Chest implements Getters {
 
     private String name;
     private LabelChest type;
@@ -69,21 +69,21 @@ public class Chest implements Getters{
     }
 
     // Dar el numero de stacks en uso
-    public int showOccupiedStack(){
+    public int showOccupiedStack() {
         int occupiedStacks = stacks.getSize();
         return occupiedStacks;
     }
 
     // verificar si el cofre esta lleno
-    public boolean isFull(){
+    public boolean isFull() {
         return stacks.getSize() == MAX_SLOTS;
     }
 
     // Eliminar un cultivo de los cofres
-    public boolean removeCrop(String cropName){
+    public boolean removeCrop(String cropName) {
         boolean removed = false;
-        for(Stack stack : stacks){
-            if(stack.getCrop().getName().equals(cropName)){
+        for (Stack stack : stacks) {
+            if (stack.getCrop().getName().equals(cropName)) {
                 stacks.remove(stack);
                 removed = true;
             }
@@ -91,19 +91,24 @@ public class Chest implements Getters{
         return removed;
     }
 
-    public void clearChest(){
+    public void clearChest() {
         stacks.clean();
     }
 
-    public void showChestContents(){
-        if(stacks.isEmpty()){
-            System.out.println("Chest is empty");
+    public String showChestContents() {
+        StringBuilder result = new StringBuilder();
+
+        if (stacks.isEmpty()) {
+            result.append("Chest is empty\n");
         } else {
-            System.out.println("Chest contents:");
-            System.out.println("Stack in use: " + stacks.getSize());
-            for(Stack stack : stacks){
-                System.out.println(stack.toString());
+            result.append("Chest contents:\n");
+            result.append("Stack in use: ").append(stacks.getSize()).append("\n");
+
+            for (Stack stack : stacks) {
+                result.append(stack.toString()).append("\n");
             }
         }
+
+        return result.toString(); // Convierte StringBuilder a String y lo devuelve
     }
 }
