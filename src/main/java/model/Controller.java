@@ -1,10 +1,11 @@
 package model;
 
-import java.util.List;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import Exceptions.*;
 import structures.*;
@@ -18,27 +19,26 @@ public class Controller {
     private SinglyLinkedList<Chest> chests; // Lista de cofres
     private final Clock clock;
     private ArrayList<PlantedCrop> plantedCrops;
+    private SinglyLinkedList<PlantedCrop> crops;
 
 
     public Controller() {
-        chests = new SinglyLinkedList<>();
+        this.chests = new SinglyLinkedList<>();
+        this.crops = new SinglyLinkedList<>();
         this.plantedCrops = new ArrayList<>();
         this.clock = new Clock();
     }
 
-    public String createChest(String name){
-        String message = "";
-        for(Chest chest: chests){
-            if(chest.getName().equals(name)){
-                message = "Chest with the name" + name + " already exists";
-                break;
-            } else {
-                Chest newChest = new Chest(name);
-                chests.add(newChest);
-                message = "Chest with the name" + name + " added";
+    public String createChest(String name) {
+        for (Chest chest : chests) {
+            if (chest.getName().equals(name)) {
+                return "Chest with the name " + name + " already exists.";
             }
         }
-        return message;
+        // Si no se encontró ningún cofre con ese nombre, se crea uno nuevo
+        Chest newChest = new Chest(name);
+        chests.add(newChest);
+        return "Chest with the name " + name + " added.";
     }
 
 
@@ -58,10 +58,26 @@ public class Controller {
         }
     }
 
+    /**
+     * Searches for a chest by its name in the collection of chests.
+     *
+     * @param name The name of the chest to search for.
+     * @return True if the chest is found, otherwise false.
+     */
+    public boolean searchChestBoolean(String name) {
+        Node<Chest> found = chests.search(name);
+
+        if (found != null) {
+            return true; // Cofre encontrado
+        } else {
+            return false; // Cofre no encontrado
+        }
+    }
+
     public String findChestContents(String name) {
         try {
             Chest chest = searchChest(name); // Busca el cofre
-            return chest.showChestContents().toString(); // Devuelve el contenido
+            return chest.showChestContents(); // Devuelve el contenido
         } catch (ChestNotFoundException e) {
             return e.getMessage(); // Muestra el mensaje de la excepción
         }
@@ -85,6 +101,52 @@ public class Controller {
             }
         }
         return message;
+    }
+
+    public String addCropToChest(String nameChest, String nameCrop, int quantity){
+        Chest found = chests.search(nameChest).getData();
+        PlantedCrop crop = findCropByName(nameCrop);
+        if(found != null){
+            found.addCrop(crop, quantity);
+            return "Crop with the name" + nameCrop + " added";
+        } else {
+            return "Chest with the name" + nameChest + " not found"; // Crear excepcion
+        }
+    }
+
+    public boolean sortCropsInChest(String chestLocation, int option, boolean ascending) {
+        Chest chest = searchChest(chestLocation);
+        if (chest != null) {
+            SinglyLinkedList<PlantedCrop> cropsInChest = chest.getCrops();
+            switch (option) {
+                case 1:
+                    // Ordenar por nombre
+                    cropsInChest.sortByName(ascending);
+                    break;
+                case 2:
+                    // Ordenar por días de crecimiento
+                    cropsInChest.insertionSortByGrowthDays(ascending);
+                    break;
+                default:
+                    System.out.println("Opción inválida");
+                    return false;
+            }
+            chest.setCrops(cropsInChest);
+            return true;
+        } else {
+            System.out.println("Cofre no encontrado");
+            return false;
+        }
+    }
+
+    // Mostrar todos los cofres con sus cultivos
+    public void displayChests() {
+        System.out.println("Lista de cofres:");
+        for (Chest chest : chests) {
+            System.out.println(
+                    "Cofre en la ubicación " + chest.getName() + " con etiqueta " + chest.getType());
+            chest.showChestContents(); // Mostrar los cultivos en el cofre
+        }
     }
 
     public void changeDays(int amount) {
@@ -166,13 +228,28 @@ public class Controller {
 
     }
 
-    //planta un nuevo crop
-    public void newPlantedCrop(String name, int amount){
+    //Crear un nuevo crop
+    public String createCrop(String name, int quantity){
 
         if(checkIfCanBePlanted(name)){
-            plantedCrops.add(new PlantedCrop(name, amount));
+            plantedCrops.add(new PlantedCrop(name, quantity));
+        }
+
+        PlantedCrop newCrop = new PlantedCrop(name, quantity);
+        crops.add(newCrop);
+        return "Culitvo: " + name + " agregado de manera exitosa!";
+    }
+
+    public PlantedCrop findCropByName(String nameCrop){
+        Node<PlantedCrop> found = crops.search(nameCrop);
+
+        if (found != null) {
+            return found.getData(); // Devuelve el crop si es encontrado
+        } else {
+            throw new CropNotFoundException("Crop with name " + nameCrop + " not found.");
         }
     }
+
 
     //lista de los cultivos plantados y su estatus
     public String listCropsStatus(){
@@ -184,6 +261,29 @@ public class Controller {
         }
 
         return list.toString();
+    }
+
+    public String saveChests(String file){
+        Gson gson = new Gson();
+        try (FileWriter writer = new FileWriter(file)) {
+            gson.toJson(chests, writer); // Guardar la lista de cofres en el archivo
+            return "Chests saved successfully.";
+        } catch (IOException e) {
+            return "Error saving chests: " + e.getMessage();
+        }
+
+    }
+
+    public String loadChests(String file){
+        Gson gson = new Gson();
+        try (FileReader reader = new FileReader(file)) {
+            // Define el tipo de la lista de cofres para que Gson lo interprete correctamente
+            Type chestListType = new TypeToken<SinglyLinkedList<Chest>>(){}.getType();
+            chests = gson.fromJson(reader, chestListType); // Cargar la lista de cofres desde el archivo
+            return "Chests loaded successfully.";
+        } catch (IOException e) {
+            return "Error loading chests: " + e.getMessage();
+        }
     }
 
 }

@@ -1,5 +1,8 @@
 package structures;
 
+import model.PlantedCrop;
+import model.Stack;
+
 import java.util.Iterator;
 
 public class SinglyLinkedList<T extends Getters> implements Iterable<T> {
@@ -17,6 +20,9 @@ public class SinglyLinkedList<T extends Getters> implements Iterable<T> {
         return size;
     }
 
+    public Node<T> getRoot() {
+        return root;
+    }
 
     // MEtodo para agregar un elemento
     public void add(T data) {
@@ -106,6 +112,8 @@ public class SinglyLinkedList<T extends Getters> implements Iterable<T> {
         }
     }
 
+
+
     //Iterador para iterar entre las linkedList
     @Override
     public Iterator<T> iterator() {
@@ -136,5 +144,112 @@ public class SinglyLinkedList<T extends Getters> implements Iterable<T> {
     public void clean(){
         root = null;
         size = 0;
+    }
+
+    // Método para obtener los días de crecimiento de un cultivo almacenado en un
+    // Space o un Crop
+    public int getCropGrowthDays(T data) {
+        if (data instanceof Stack) {
+            Stack stack = (Stack) data;
+            return stack.getCrop().getDays();
+        } else if (data instanceof PlantedCrop) {
+            PlantedCrop crop = (PlantedCrop) data;
+            return crop.getDays();
+        }
+        throw new IllegalArgumentException("Tipo no soportado para la ordenación por días de crecimiento.");
+    }
+
+    // Ordenamiento
+    /**
+     * description: Método para ordenar la lista por días de crecimiento de los
+     * cultivos (Insertion Sorting).
+     *
+     *
+     **/
+    public void insertionSortByGrowthDays(boolean ascending) {
+        if (root == null || root.getNext() == null) {
+            return;
+        }
+
+        Node<T> sortedList = null;
+        Node<T> current = root;
+
+        while (current != null) {
+            Node<T> next = current.getNext();
+            sortedList = sortedInsert(sortedList, current, ascending);
+            current = next;
+        }
+
+        root = sortedList;
+    }
+
+    public Node<T> sortedInsert(Node<T> sortedList, Node<T> newNode, boolean ascending) {
+        // Comparación entre nodos de tipo Crop
+        if (sortedList == null
+                || (ascending && getCropGrowthDays(sortedList.getData()) > getCropGrowthDays(newNode.getData()))
+                || (!ascending && getCropGrowthDays(sortedList.getData()) < getCropGrowthDays(newNode.getData()))) {
+            newNode.setNext(sortedList);
+            sortedList = newNode;
+        } else {
+            Node<T> current = sortedList;
+            while (current.getNext() != null && ((ascending
+                    && getCropGrowthDays(current.getNext().getData()) <= getCropGrowthDays(newNode.getData()))
+                    || (!ascending && getCropGrowthDays(current.getNext().getData()) >= getCropGrowthDays(
+                    newNode.getData())))) {
+                current = current.getNext();
+            }
+            newNode.setNext(current.getNext());
+            current.setNext(newNode);
+        }
+        return sortedList;
+    }
+
+    // Metodo para ordenar la lista por nombre de los cultivos
+    public void sortByName(boolean ascending) {
+        if (root == null || root.getNext() == null) {
+            return;
+        }
+
+        Node<T> sortedList = null;
+        Node<T> current = root;
+
+        while (current != null) {
+            Node<T> next = current.getNext();
+            sortedList = sortedInsertByName(sortedList, current, ascending);
+            current = next;
+        }
+
+        root = sortedList;
+    }
+
+    // Método auxiliar para la inserción ordenada por nombre
+    public Node<T> sortedInsertByName(Node<T> sortedList, Node<T> newNode, boolean ascending) {
+        // Comparación entre nodos de tipo Crop
+        if (sortedList == null
+                || (ascending && getCropName(sortedList.getData()).compareTo(getCropName(newNode.getData())) > 0)
+                || (!ascending && getCropName(sortedList.getData()).compareTo(getCropName(newNode.getData())) < 0)) {
+            newNode.setNext(sortedList);
+            sortedList = newNode;
+        } else {
+            Node<T> current = sortedList;
+            while (current.getNext() != null && ((ascending
+                    && getCropName(current.getNext().getData()).compareTo(getCropName(newNode.getData())) <= 0)
+                    || (!ascending && getCropName(current.getNext().getData())
+                    .compareTo(getCropName(newNode.getData())) >= 0))) {
+                current = current.getNext();
+            }
+            newNode.setNext(current.getNext());
+            current.setNext(newNode);
+        }
+        return sortedList;
+    }
+
+    // Obtener el nombre de un cultivo almacenado en un crop
+    public String getCropName(T data) {
+        if (data instanceof PlantedCrop) {
+            PlantedCrop crop = (PlantedCrop) data;
+            return crop.getName();
+        }
+        throw new IllegalArgumentException("Tipo no soportado para la ordenación por nombre.");
     }
 }

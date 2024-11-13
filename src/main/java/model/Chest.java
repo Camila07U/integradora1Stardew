@@ -43,28 +43,53 @@ public class Chest implements Getters {
 
     public boolean addCrop(PlantedCrop plantedCrop, int quantity) {
         boolean added = false;
-        boolean full = isFull();
-        if (full = false) {
-            // Se itera entre los stacks
-            for (Stack stack : stacks) {
 
-                // Si el primero esta vacio lo guarda alli
-                if (stack.isEmpty()) {
-                    stack.setCrop(plantedCrop, quantity);
-                    added = true;
-                    return added;
+        // Verificar si el cofre está lleno
+        if (isFull()) {
+            System.out.println("Chest full, add in other Chest");
+            return false;
+        }
 
-                    // Valida que el cultivo ya guardado en ese Stack sea el mismo que vamos a guardar
-                } else if (stack.getCrop().getName().equals(plantedCrop.getName())) {
-                    stack.incrementQuantity(quantity);
+        // Iterar sobre los stacks existentes para agregar el cultivo
+        for (Stack stack : stacks) {
+            // Si el stack está vacío, crear uno nuevo y agregar el cultivo
+            if (stack.isEmpty()) {
+                stack = new Stack(plantedCrop, quantity);  // Crear nuevo stack con el cultivo
+                stacks.add(stack);  // Agregar el nuevo stack al cofre
+                added = true;
+                return added;
+            }
+
+            // Si el cultivo ya está en el stack
+            if (stack.getCrop().getName().equals(plantedCrop.getName())) {
+                int availableSpace = 25 - stack.getQuantity();  // Calcular el espacio disponible en el stack actual
+
+                // Si hay espacio suficiente en el stack actual, agregar al stack
+                if (quantity <= availableSpace) {
+                    stack.incrementQuantity(quantity);  // Utilizamos el metodo incrementQuantity
                     added = true;
                     return added;
                 } else {
-                    System.out.println("Cantidad excede el limite maximo de 25 stacks por espacio");
+                    // Agregar la cantidad que cabe en el stack actual
+                    stack.incrementQuantity(availableSpace);
+                    quantity -= availableSpace;  // Reducir la cantidad restante
+
+                    // Crear un nuevo stack para la cantidad restante si todavía queda
+                    if (quantity > 0) {
+                        Stack newStack = new Stack(plantedCrop, quantity);
+                        stacks.add(newStack);  // Agregar el nuevo stack al cofre
+                        added = true;
+                    }
+                    return added;
                 }
             }
-            System.out.println("Chest full, add in other Chest"); // Excepcion creo
         }
+
+        // Si no hay ningún stack con el cultivo, crear uno nuevo
+        Stack newStack = new Stack(plantedCrop, quantity);
+        stacks.add(newStack);
+        added = true;
+
         return added;
     }
 
@@ -93,6 +118,23 @@ public class Chest implements Getters {
 
     public void clearChest() {
         stacks.clean();
+    }
+
+    // Método para obtener los cultivos del cofre
+    public SinglyLinkedList<PlantedCrop> getCrops() {
+        SinglyLinkedList<PlantedCrop> crops = new SinglyLinkedList<>();
+        for (Stack stack : stacks) {
+            crops.add(stack.getCrop());
+        }
+        return crops;
+    }
+
+    // Método para establecer los cultivos del cofre
+    public void setCrops(SinglyLinkedList<PlantedCrop> crops) {
+        clearChest();
+        for (PlantedCrop crop : crops) {
+            addCrop(crop, 1); // Add each crop with a quantity of 1
+        }
     }
 
     public String showChestContents() {
