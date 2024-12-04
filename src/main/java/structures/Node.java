@@ -1,33 +1,27 @@
 package structures;
 
+public class Node<T> {
+    T data;
+    Node<T> next;
 
-public class Node<E> {
-    E data;
-    Node<E> next;
-
-    public Node(E data, Node<E> next)
-    {
+    public Node(T data) {
         this.data = data;
         this.next = null;
     }
 
-    public E getData()
-    {
+    public T getData() {
         return data;
     }
 
-    public void setData(E data)
-    {
+    public void setData(T data) {
         this.data = data;
     }
 
-    public Node<E> getNext()
-    {
+    public Node<T> getNext() {
         return next;
     }
 
-    public void setNext(Node<E> next)
-    {
+    public void setNext(Node<T> next) {
         this.next = next;
     }
 }
